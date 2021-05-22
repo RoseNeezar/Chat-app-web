@@ -1,18 +1,21 @@
-import { useRouter } from "next/router";
 import React from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Main from "../app/PageComponent/Main";
+import About from "../app/PageComponent/About";
 
-const Index = (props: { message: string }) => {
-  const router = useRouter();
+const App = () => {
   return (
-    <div>
-      <h1>its me the app</h1>
-      <h2>{props.message}</h2>
-      <button onClick={() => router.push("/app")}>go to client side</button>
-    </div>
+    <Router basename="/">
+      <Switch>
+        <Route exact path="/">
+          <Main />
+        </Route>
+        <Route exact path="/about">
+          <About />
+        </Route>
+      </Switch>
+    </Router>
   );
 };
-export default Index;
 
-export const getServerSideProps = () => {
-  return { props: { message: "INSANE MALDING" } };
-};
+export default App;
