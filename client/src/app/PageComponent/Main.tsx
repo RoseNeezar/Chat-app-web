@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
+import useSocket from "../utils/socketConnect";
 
 const Main = () => {
   const [state, setState] = useState(false);
@@ -7,6 +8,7 @@ const Main = () => {
   function handleClick() {
     history.push("/about");
   }
+  useSocket();
   return (
     <div>
       {state ? <div>if it ts true</div> : <div>FALSE</div>}this is rendered on
