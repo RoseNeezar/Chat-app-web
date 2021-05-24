@@ -20,11 +20,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   handleMessage(
     @MessageBody() data: string,
     @ConnectedSocket() client: Socket,
-  ): string {
+  ) {
     console.log('Yup', data);
     client.emit('message', { msg: 'Oh hi' });
-    this.server.emit('message', { msg: 'server sent it' });
-    return 'Hello world!';
   }
 
   handleDisconnect(client: Socket) {
