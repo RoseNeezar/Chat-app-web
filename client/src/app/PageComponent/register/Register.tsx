@@ -50,7 +50,7 @@ const Register = () => {
             error={errorHelper(errors.message, "Password")}
             placeholder="Password"
           />
-          <button className="self-center w-1/2 py-6 mt-10 mb-4 text-xs font-bold text-white uppercase rounded-2xl bg-dark-main">
+          <button className="self-center w-1/2 py-6 mt-10 mb-4 text-lg font-bold text-white uppercase rounded-2xl bg-dark-main">
             Sign Up
           </button>
         </form>
