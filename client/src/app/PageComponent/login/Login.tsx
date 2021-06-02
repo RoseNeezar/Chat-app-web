@@ -22,8 +22,8 @@ const Login = () => {
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-dark-main">
       <h1 className="mb-10 text-6xl text-white">Login</h1>
-      <div className="flex flex-col items-center justify-center w-1/2 pl-10 pr-10 shadow-lg mb-44 h-1/3 bg-dark-second rounded-2xl">
-        <form onSubmit={handleSubmit} className="flex flex-col w-full">
+      <div className="flex flex-col items-center justify-center h-auto p-10 shadow-lg w-96 mb-44 bg-dark-second rounded-2xl">
+        <form onSubmit={handleSubmit} className="flex flex-col w-full ">
           <InputGroup
             className="mb-10"
             type="username"
