@@ -1,5 +1,10 @@
 import { AppProps } from "next/app";
+import { wrapper } from "../app/redux/store";
+import axios from "axios";
 import "../styles/tailwind.css";
+
+axios.defaults.baseURL = process.env.NEXT_PUBLIC_SERVER_BASE_URL;
+axios.defaults.withCredentials = true;
 
 function App({ Component, pageProps }: AppProps) {
   return (
@@ -9,4 +14,4 @@ function App({ Component, pageProps }: AppProps) {
   );
 }
 
-export default App;
+export default wrapper.withRedux(App);
