@@ -2,12 +2,12 @@ import React, { ChangeEvent, FC, FormEvent, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import InputGroup from "../../components/InputGroup";
-import { ARegister } from "../../redux/actions/auth";
+import { ACurrentUser, ARegister } from "../../redux/actions/auth";
 import { IState } from "../../redux/reducers/rootReducer";
 import { errorHelper } from "../../utils/error-serial";
 
 const Register: FC = () => {
-  const registerState = useSelector(
+  const registerError = useSelector(
     (state: IState) => state.authReducer.apiState.IARegister?.error
   );
   const [formState, setFormState] = useState({
@@ -32,7 +32,7 @@ const Register: FC = () => {
       dispatch(ARegister({ username, email, password }, history));
     }
   };
-  console.log(registerState?.message, "hmm");
+
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-dark-main">
       <h1 className="mb-10 text-6xl text-white">Register</h1>
@@ -43,7 +43,7 @@ const Register: FC = () => {
             type="email"
             value={email}
             setValue={onChangeText}
-            error={errorHelper(registerState?.message as any, "email")}
+            error={errorHelper(registerError?.message as any, "email")}
             placeholder="Email"
           />
           <InputGroup
@@ -51,7 +51,7 @@ const Register: FC = () => {
             type="username"
             value={username}
             setValue={onChangeText}
-            error={errorHelper(registerState?.message as any, "Username")}
+            error={errorHelper(registerError?.message as any, "Username")}
             placeholder="Username"
           />
           <InputGroup
@@ -59,7 +59,7 @@ const Register: FC = () => {
             type="password"
             value={password}
             setValue={onChangeText}
-            error={errorHelper(registerState?.message as any, "Password")}
+            error={errorHelper(registerError?.message as any, "Password")}
             placeholder="Password"
           />
           <button className="self-center w-1/2 py-6 mt-10 mb-4 text-lg font-bold text-white uppercase rounded-2xl bg-dark-main">

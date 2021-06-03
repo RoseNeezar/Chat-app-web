@@ -1,16 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { ACurrentUser } from "../redux/actions/auth";
 import useSocket from "../utils/socketConnect";
 import FriendList from "./messenger/FriendList/FriendList";
 import Messages from "./messenger/Messages/Messages";
 
 const Main = () => {
-  const [state, setState] = useState(false);
-  let history = useHistory();
-  function handleClick() {
-    history.push("/about");
-  }
-  useSocket();
+  // useSocket();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(ACurrentUser());
+  }, []);
   return (
     <div className="flex flex-row h-screen bg-dark-main">
       <div className="flex-col hidden w-1/5 h-full pt-16 lg:flex">

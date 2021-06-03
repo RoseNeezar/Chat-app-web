@@ -13,6 +13,8 @@ import {
   REGISTER_TYPE_ERROR,
   LOGIN_TYPE_LOADING,
   LOGIN_TYPE_ERROR,
+  CURRENT_USER,
+  CURRENT_USER_ERROR,
 } from "../types/user.type";
 
 export const ALogin =
@@ -25,10 +27,12 @@ export const ALogin =
           loading: true,
         },
       });
-      const result = await agent.AuthService.login(param);
+      const user = await agent.AuthService.login(param);
       dispatch({
         type: LOGIN_TYPE,
-        payload: result,
+        payload: {
+          user,
+        },
         apiState: {
           success: true,
         },
@@ -55,10 +59,12 @@ export const ARegister =
           loading: true,
         },
       });
-      const result = await agent.AuthService.register(param);
+      const user = await agent.AuthService.register(param);
       dispatch({
         type: REGISTER_TYPE,
-        payload: result,
+        payload: {
+          user,
+        },
         apiState: {
           success: true,
         },
@@ -66,7 +72,6 @@ export const ARegister =
 
       history.push("/login");
     } catch (error) {
-      console.log(error.response.data);
       dispatch({
         type: REGISTER_TYPE_ERROR,
         apiState: {
@@ -77,8 +82,23 @@ export const ARegister =
   };
 
 export const ALogout =
-  (router: NextRouter) => (dispatch: Dispatch<AuthDispatchTypes>) => {
-    agent.AuthService.logout();
+  (router: NextRouter) => async (dispatch: Dispatch<AuthDispatchTypes>) => {
+    await agent.AuthService.logout();
     dispatch({ type: LOGOUT });
     router.push("/login");
+  };
+
+export const ACurrentUser =
+  () => async (dispatch: Dispatch<AuthDispatchTypes>) => {
+    try {
+      const user = await agent.AuthService.currentUser();
+      dispatch({ type: CURRENT_USER, payload: { user } });
+    } catch (error) {
+      dispatch({
+        type: CURRENT_USER_ERROR,
+        apiState: {
+          error: error.response.data,
+        },
+      });
+    }
   };

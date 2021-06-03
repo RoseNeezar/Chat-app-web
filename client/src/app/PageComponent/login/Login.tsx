@@ -1,15 +1,23 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { ChangeEvent, FC, FormEvent, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useHistory } from "react-router-dom";
 import InputGroup from "../../components/InputGroup";
+import { ACurrentUser, ALogin } from "../../redux/actions/auth";
+import { IState } from "../../redux/reducers/rootReducer";
 import { errorHelper } from "../../utils/error-serial";
 
-const Login = () => {
+const Login: FC = () => {
+  const registerError = useSelector(
+    (state: IState) => state.authReducer.apiState.IARegister?.error
+  );
+  const dispatch = useDispatch();
+  const history = useHistory();
   const [formState, setFormState] = useState({
     username: "",
     password: "",
   });
   const { username, password } = formState;
-  const [errors, setErrors] = useState<any>({});
+
   const onChangeText =
     (name: string) =>
     (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -18,7 +26,11 @@ const Login = () => {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    if (username && password) {
+      dispatch(ALogin({ username, password }, history));
+    }
   };
+
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-dark-main">
       <h1 className="mb-10 text-6xl text-white">Login</h1>
@@ -30,7 +42,7 @@ const Login = () => {
             value={username}
             setValue={onChangeText}
             placeholder="Username"
-            error={errorHelper(errors.message, "Username")}
+            error={errorHelper(registerError?.message as any, "Username")}
           />
           <InputGroup
             className="mb-4"
@@ -38,7 +50,7 @@ const Login = () => {
             value={password}
             setValue={onChangeText}
             placeholder="Password"
-            error={errorHelper(errors.message, "Password")}
+            error={errorHelper(registerError?.message as any, "Password")}
           />
 
           <button className="self-center w-1/2 py-6 mt-10 mb-4 text-lg font-bold text-white uppercase rounded-2xl bg-dark-main">
@@ -48,9 +60,9 @@ const Login = () => {
         <small className="flex flex-row">
           <p className="text-gray-400"> Dont have an account?</p>
           <Link to="/register">
-            <a className="ml-1 text-white uppercase hover:text-gray-400">
+            <p className="ml-1 text-white uppercase hover:text-gray-400">
               Sign Up
-            </a>
+            </p>
           </Link>
         </small>
       </div>
