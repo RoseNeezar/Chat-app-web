@@ -61,6 +61,21 @@ const authReducer = (
         ...state,
         user: undefined,
       };
+    case "CURRENT_USER":
+      return {
+        ...state,
+        user: action.payload.user,
+      };
+    case "CURRENT_USER_ERROR":
+      return {
+        ...state,
+        apiState: {
+          IACurrentUser: {
+            ...defaultApiState,
+            error: action.apiState.error as Error,
+          },
+        },
+      };
     default: {
       return state;
     }

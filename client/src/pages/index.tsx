@@ -5,20 +5,25 @@ import Main from "../app/PageComponent/Main";
 import Login from "../app/PageComponent/login/Login";
 import Register from "../app/PageComponent/register/Register";
 import Navbar from "../app/components/Navbar/Navbar";
+import NotFound from "../app/PageComponent/NotFound/NotFound";
+import ProtectedRoute from "../app/utils/ProtectedRoute";
 
 const App = () => {
   return (
     <Router basename="/">
       <Switch>
-        <Route exact path="/">
+        <ProtectedRoute exact path="/">
           <Navbar />
           <Main />
-        </Route>
+        </ProtectedRoute>
         <Route exact path="/login">
           <Login />
         </Route>
         <Route exact path="/register">
           <Register />
+        </Route>
+        <Route path="*">
+          <NotFound />
         </Route>
       </Switch>
     </Router>
