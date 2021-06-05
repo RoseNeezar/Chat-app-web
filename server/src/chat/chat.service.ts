@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ChatUserRepository } from 'src/entities/chatUser/chat-user.repository';
-import { ChatsRepository } from 'src/entities/chat/chat.repository';
+import { ChatsRepository } from 'src/entities/channel/channel.repository';
 import { MessageRepository } from 'src/entities/messages/messages.repository';
 import UserEntity from 'src/entities/user/user.entity';
 import { UserRepository } from 'src/entities/user/user.repository';
@@ -16,6 +16,13 @@ export class ChatService {
   ) {}
 
   async Index() {
-    return;
+    const channel = this.chatsRepo
+      .createQueryBuilder('ch')
+      .leftJoinAndSelect('ch.chatUser', 'chatUser')
+      .leftJoinAndSelect('chatUser.user', 'user')
+      .leftJoinAndSelect('ch.message', 'message')
+      .leftJoinAndSelect('message.fromUserId', 'fromUser')
+      .getMany();
+    return channel;
   }
 }

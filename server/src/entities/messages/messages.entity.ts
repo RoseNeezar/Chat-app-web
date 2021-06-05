@@ -5,7 +5,7 @@ import {
   JoinColumn,
   ManyToOne,
 } from 'typeorm';
-import ChatsEntity from '../chat/chat.entity';
+import ChannelEntity from '../channel/channel.entity';
 import Entity from '../entity.entity';
 import UserEntity from '../user/user.entity';
 
@@ -31,7 +31,7 @@ export default class MessageEntity extends Entity {
   @Column({ nullable: true })
   chatId: number;
 
-  @ManyToOne(() => ChatsEntity, (chat) => chat.message)
+  @ManyToOne(() => ChannelEntity, (chat) => chat.message)
   @JoinColumn()
-  chat: ChatsEntity;
+  channel: ChannelEntity;
 }

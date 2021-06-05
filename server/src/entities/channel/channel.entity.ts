@@ -3,9 +3,9 @@ import ChatsUserEntity from '../chatUser/chat-user.entity';
 import Entity from '../entity.entity';
 import MessageEntity from '../messages/messages.entity';
 
-@TOEntity('Chats')
-export default class ChatsEntity extends Entity {
-  constructor(user: Partial<ChatsEntity>) {
+@TOEntity('Channels')
+export default class ChannelEntity extends Entity {
+  constructor(user: Partial<ChannelEntity>) {
     super();
     Object.assign(this, user);
   }
@@ -13,9 +13,9 @@ export default class ChatsEntity extends Entity {
   @Column()
   type: string;
 
-  @OneToMany(() => ChatsUserEntity, (chatUser) => chatUser.chat)
+  @OneToMany(() => ChatsUserEntity, (chatUser) => chatUser.channel)
   chatUser: ChatsUserEntity[];
 
-  @OneToMany(() => MessageEntity, (message) => message.chat)
+  @OneToMany(() => MessageEntity, (message) => message.channel)
   message: MessageEntity[];
 }
