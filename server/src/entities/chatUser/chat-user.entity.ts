@@ -16,7 +16,7 @@ export default class ChatsUserEntity extends Entity {
   @Column({ nullable: true })
   userId: number;
 
-  @ManyToOne(() => ChannelEntity, (chat) => chat.chatUser)
+  @ManyToOne(() => ChannelEntity, (channel) => channel.chatUser)
   @JoinColumn()
   channel: ChannelEntity;
 

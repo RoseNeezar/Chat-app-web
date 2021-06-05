@@ -9,8 +9,8 @@ export class ChatController {
   constructor(private chatService: ChatService) {}
 
   @Get('/')
-  // @UseGuards(AuthGuard())
-  index(): Promise<any> {
-    return this.chatService.Index();
+  @UseGuards(AuthGuard())
+  getChannels(@GetUser() user: UserEntity): Promise<any> {
+    return this.chatService.getChannels(user);
   }
 }
