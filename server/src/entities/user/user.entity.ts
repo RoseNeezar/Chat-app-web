@@ -1,16 +1,18 @@
-import { IsEmail, Length } from 'class-validator';
-import {
-  Entity as TOEntity,
-  Column,
-  Index,
-  BeforeInsert,
-  OneToMany,
-} from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { Exclude } from 'class-transformer';
+import { IsEmail, Length } from 'class-validator';
+import {
+  BeforeInsert,
+  Column,
+  Entity as TOEntity,
+  Index,
+  OneToMany,
+} from 'typeorm';
+import ChatsUserEntity from '../chatUser/chat-user.entity';
 import Entity from '../entity.entity';
+import MessageEntity from '../messages/messages.entity';
 
-@TOEntity('users')
+@TOEntity('User')
 export default class UserEntity extends Entity {
   constructor(user: Partial<UserEntity>) {
     super();
@@ -31,6 +33,9 @@ export default class UserEntity extends Entity {
   @Column()
   @Length(6, 255)
   password: string;
+
+  @OneToMany(() => ChatsUserEntity, (chatUser) => chatUser.user)
+  chatUser: ChatsUserEntity[];
 
   @BeforeInsert()
   async hashPassword() {
