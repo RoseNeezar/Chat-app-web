@@ -3,7 +3,7 @@ import ChatsUserEntity from '../chatUser/chat-user.entity';
 import Entity from '../entity.entity';
 import MessageEntity from '../messages/messages.entity';
 
-@TOEntity('Channels')
+@TOEntity('Channel')
 export default class ChannelEntity extends Entity {
   constructor(user: Partial<ChannelEntity>) {
     super();

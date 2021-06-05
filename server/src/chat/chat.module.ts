@@ -7,6 +7,7 @@ import { UserRepository } from 'src/entities/user/user.repository';
 import { ChatGateway } from './chat.gateway';
 import { ChatService } from './chat.service';
 import { ChatController } from './chat.controller';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ChatController } from './chat.controller';
       ChatUserRepository,
       MessageRepository,
     ]),
+    AuthModule,
   ],
   providers: [ChatService, ChatGateway],
   controllers: [ChatController],
