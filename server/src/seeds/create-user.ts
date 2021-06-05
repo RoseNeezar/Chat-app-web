@@ -21,48 +21,79 @@ export default class CreateData implements Seeder {
     const day = hour * 24;
 
     // Create users
-    // await connection
-    //   .createQueryBuilder()
-    //   .insert()
-    //   .into(UserEntity)
-    //   .values([
-    //     {
-    //       username: 'john',
-    //       email: 'john@email.com',
-    //       password,
-    //       createAt: timePlus(),
-    //       updatedAt: timePlus(),
-    //     },
-    //     {
-    //       username: 'jane',
-    //       email: 'jane@email.com',
-    //       password,
-    //       createAt: timePlus(minute * 5),
-    //       updatedAt: timePlus(minute * 5),
-    //     },
-    //   ])
-    //   .execute();
+    await connection
+      .createQueryBuilder()
+      .insert()
+      .into(UserEntity)
+      .values([
+        {
+          username: 'john',
+          email: 'john@email.com',
+          password,
+          createAt: timePlus(),
+          updatedAt: timePlus(),
+        },
+        {
+          username: 'jane',
+          email: 'jane@email.com',
+          password,
+          createAt: timePlus(minute * 5),
+          updatedAt: timePlus(minute * 5),
+        },
+        {
+          username: 'hearts',
+          email: 'hearts@email.com',
+          password,
+          createAt: timePlus(minute * 5),
+          updatedAt: timePlus(minute * 5),
+        },
+      ])
+      .execute();
 
     const john = await UserEntity.findOne({ username: 'john' });
     const jane = await UserEntity.findOne({ username: 'jane' });
+    const hearts = await UserEntity.findOne({ username: 'hearts' });
 
-    const chat = await ChannelEntity.create();
+    await connection
+      .createQueryBuilder()
+      .insert()
+      .into(ChannelEntity)
+      .values([
+        {
+          type: 'dual',
+        },
+        {
+          type: 'dual',
+        },
+      ])
+      .execute();
 
-    // await connection
-    //   .createQueryBuilder()
-    //   .insert()
-    //   .into(ChatsUserEntity)
-    //   .values([
-    //     {
-    //       chatId: chat.id,
-    //       userId: john.id,
-    //     },
-    //     {
-    //       chatId: chat.id,
-    //       userId: jane.id,
-    //     },
-    //   ])
-    //   .execute();
+    const channel1 = await ChannelEntity.findOne({ id: 1 });
+    const channel2 = await ChannelEntity.findOne({ id: 2 });
+
+    await connection
+      .createQueryBuilder()
+      .insert()
+      .into(ChatsUserEntity)
+      .values([
+        {
+          channelId: channel1.id,
+          userId: john.id,
+        },
+        {
+          channelId: channel1.id,
+          userId: jane.id,
+        },
+        {
+          channelId: channel2.id,
+          userId: john.id,
+        },
+        {
+          channelId: channel2.id,
+          userId: hearts.id,
+        },
+      ])
+      .execute();
 
     await connection
       .createQueryBuilder()
@@ -72,20 +103,32 @@ export default class CreateData implements Seeder {
         {
           type: 'dual',
           message: 'Hello friend',
-          chatId: chat.id,
+          channelId: channel1.id,
           fromUserId: john.id,
         },
         {
           type: 'dual',
           message: 'Hi buddy',
-          chatId: chat.id,
+          channelId: channel1.id,
           fromUserId: jane.id,
         },
         {
           type: 'dual',
           message: 'Long time no speak',
-          chatId: chat.id,
+          channelId: channel1.id,
           fromUserId: jane.id,
+        },
+        {
+          type: 'dual',
+          message: 'Yooo',
+          channelId: channel2.id,
+          fromUserId: john.id,
+        },
+        {
+          type: 'dual',
+          message: 'Sup my dud',
+          channelId: channel2.id,
+          fromUserId: hearts.id,
         },
       ])
       .execute();
