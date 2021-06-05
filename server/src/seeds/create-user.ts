@@ -4,7 +4,7 @@ import * as bcrypt from 'bcryptjs';
 import UserEntity from 'src/entities/user/user.entity';
 import MessageEntity from 'src/entities/messages/messages.entity';
 import ChatsUserEntity from 'src/entities/chatUser/chat-user.entity';
-import ChatsEntity from 'src/entities/chat/chat.entity';
+import ChannelEntity from 'src/entities/channel/channel.entity';
 
 function timePlus(duration = 0) {
   const time = new Date('2020-11-07 07:01:43.18').getTime();
@@ -46,7 +46,7 @@ export default class CreateData implements Seeder {
     const john = await UserEntity.findOne({ username: 'john' });
     const jane = await UserEntity.findOne({ username: 'jane' });
 
-    const chat = await ChatsEntity.create();
+    const chat = await ChannelEntity.create();
 
     // await connection
     //   .createQueryBuilder()

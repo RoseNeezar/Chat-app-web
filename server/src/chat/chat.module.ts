@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ChatUserRepository } from 'src/entities/chatUser/chat-user.repository';
-import { ChatsRepository } from 'src/entities/chat/chat.repository';
+import { ChannelRepository } from 'src/entities/channel/channel.repository';
 import { MessageRepository } from 'src/entities/messages/messages.repository';
 import { UserRepository } from 'src/entities/user/user.repository';
 import { ChatGateway } from './chat.gateway';
@@ -12,7 +12,7 @@ import { ChatController } from './chat.controller';
   imports: [
     TypeOrmModule.forFeature([
       UserRepository,
-      ChatsRepository,
+      ChannelRepository,
       ChatUserRepository,
       MessageRepository,
     ]),
