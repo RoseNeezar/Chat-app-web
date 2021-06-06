@@ -20,3 +20,8 @@ export interface IMessageDto {
   channelId: number;
   getPage: number;
 }
+
+export interface IChatGroupDto {
+  channelId: number;
+  userId: number;
+}
