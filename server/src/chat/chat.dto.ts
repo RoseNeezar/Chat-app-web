@@ -26,4 +26,4 @@ export interface IChatGroupDto {
   userId: number;
 }
 
-export type IDeleteChatDto = Pick<IMessageDto, 'channelId'>;
+export type ILeaveGroup = Pick<IMessageDto, 'channelId'>;

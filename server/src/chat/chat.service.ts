@@ -8,7 +8,7 @@ import { UserRepository } from 'src/entities/user/user.repository';
 import { getConnection, getManager } from 'typeorm';
 import ChannelEntity from 'src/entities/channel/channel.entity';
 import ChatsUserEntity from 'src/entities/chatUser/chat-user.entity';
-import { IChatGroupDto, IDeleteChatDto, IMessageDto } from './chat.dto';
+import { IChatGroupDto, IMessageDto } from './chat.dto';
 import MessageEntity from 'src/entities/messages/messages.entity';
 
 @Injectable()
@@ -191,6 +191,40 @@ export class ChatService {
       await this.channelRepo.delete({ id: channelId });
 
       return { channelId, notifyUsers };
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException();
+    }
+  }
+
+  async leaveCurrentChannel(channelId: number, user: UserEntity) {
+    try {
+      const channel = await this.channelRepo
+        .createQueryBuilder('ch')
+        .where('ch.id = :channelId', { channelId })
+        .leftJoinAndSelect('ch.chatUser', 'cu')
+        .leftJoinAndSelect('cu.user', 'user')
+        .getOne();
+
+      if (channel.chatUser.length === 2) {
+        throw new BadRequestException('You cannot leave this chat');
+      }
+
+      if (channel.chatUser.length === 3) {
+        channel.type = 'group';
+        await this.channelRepo.update(channelId, { type: 'dual' });
+      }
+      await this.chatUserRepo.delete({ channelId, userId: user.id });
+      await this.messageRepo.delete({ channelId, fromUserId: user.id });
+
+      const notifyUsers = channel.chatUser.map((user) => user.userId);
+
+      return {
+        channelId: channel.id,
+        userId: user.id,
+        currentUserId: user.id,
+        notifyUsers,
+      };
     } catch (error) {
       console.log(error);
       throw new BadRequestException();
