@@ -8,7 +8,8 @@ import { UserRepository } from 'src/entities/user/user.repository';
 import { getConnection, getManager } from 'typeorm';
 import ChannelEntity from 'src/entities/channel/channel.entity';
 import ChatsUserEntity from 'src/entities/chatUser/chat-user.entity';
-import { IMessageDto } from './chat.dto';
+import { IChatGroupDto, IMessageDto } from './chat.dto';
+import MessageEntity from 'src/entities/messages/messages.entity';
 
 @Injectable()
 export class ChatService {
@@ -30,7 +31,7 @@ export class ChatService {
       .leftJoinAndSelect('chatUser.user', 'user')
       .andWhere(`NOT "user"."id" = ${user.id}`)
       .leftJoinAndSelect('ch.message', 'message')
-      .leftJoinAndSelect('message.fromUserId', 'fromUser')
+      .leftJoinAndSelect('message.user', 'fromUser')
       .limit(20)
       .orderBy('message.id', 'DESC')
       .getOne();
@@ -133,5 +134,46 @@ export class ChatService {
       },
     };
     return result;
+  }
+
+  async addUserToGroup(chatGroupDto: IChatGroupDto) {
+    const { channelId, userId } = chatGroupDto;
+
+    const channel = await this.channelRepo
+      .createQueryBuilder('ch')
+      .where('ch.id = :channelId', { channelId })
+      .leftJoinAndSelect('ch.chatUser', 'cu')
+      .leftJoinAndSelect('cu.user', 'user')
+      .getOne();
+
+    const messages = await this.messageRepo
+      .createQueryBuilder('msg')
+      .where('msg.channelId = :channelId', { channelId: channelId })
+      .leftJoinAndSelect('msg.user', 'user')
+      .take(20)
+      .orderBy('msg.id', 'DESC')
+      .getManyAndCount();
+
+    channel.message = messages[0].reverse();
+
+    channel.chatUser.forEach((user) => {
+      if (user.userId === userId) {
+        throw new BadRequestException('User already in group');
+      }
+    });
+
+    await this.chatUserRepo.create({ channelId, userId }).save();
+    const newChatter = await this.userRepo.findOne({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (channel.type === 'dual') {
+      channel.type = 'group';
+      await this.channelRepo.update(channelId, { type: 'group' });
+    }
+
+    return { channel, newChatter };
   }
 }

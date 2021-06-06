@@ -27,7 +27,7 @@ export default class MessageEntity extends Entity {
   @Column({ nullable: true })
   fromUserId: number;
 
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(() => UserEntity, (user) => user.messages)
   @JoinColumn({ name: 'fromUserId' })
   user: UserEntity;
 
