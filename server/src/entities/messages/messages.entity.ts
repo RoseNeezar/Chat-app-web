@@ -24,9 +24,12 @@ export default class MessageEntity extends Entity {
   @Column()
   message: string;
 
+  @Column({ nullable: true })
+  fromUserId: number;
+
   @ManyToOne(() => UserEntity)
   @JoinColumn({ name: 'fromUserId' })
-  fromUserId: number;
+  user: UserEntity;
 
   @Column({ nullable: true })
   channelId: number;

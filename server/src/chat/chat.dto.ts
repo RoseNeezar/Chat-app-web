@@ -15,3 +15,8 @@ export class ChatDto {
     this.partnerId = partnerId;
   }
 }
+
+export interface IMessageDto {
+  channelId: number;
+  getPage: number;
+}

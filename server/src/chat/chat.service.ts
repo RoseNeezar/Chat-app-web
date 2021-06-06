@@ -8,6 +8,7 @@ import { UserRepository } from 'src/entities/user/user.repository';
 import { getConnection, getManager } from 'typeorm';
 import ChannelEntity from 'src/entities/channel/channel.entity';
 import ChatsUserEntity from 'src/entities/chatUser/chat-user.entity';
+import { IMessageDto } from './chat.dto';
 
 @Injectable()
 export class ChatService {
@@ -104,5 +105,33 @@ export class ChatService {
       console.log(error);
       throw new BadRequestException();
     }
+  }
+
+  async getChannelMessages(messageDto: IMessageDto) {
+    const { channelId, getPage } = messageDto;
+    const limit = 10;
+    const page = getPage || 1;
+    const offset = page > 1 ? page * limit : 0;
+
+    const messages = await this.messageRepo
+      .createQueryBuilder('msg')
+      .where('msg.channelId = :channelId', { channelId: channelId })
+      .leftJoinAndSelect('msg.user', 'user')
+      .skip(offset)
+      .take(limit)
+      .getManyAndCount();
+
+    const totalPages = Math.ceil(messages[1] / limit);
+
+    if (page > totalPages) return { data: { messages: [] } };
+
+    const result = {
+      messages: messages[0],
+      pagination: {
+        page: +page,
+        totalPages,
+      },
+    };
+    return result;
   }
 }

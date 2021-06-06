@@ -37,6 +37,9 @@ export default class UserEntity extends Entity {
   @OneToMany(() => ChatsUserEntity, (chatUser) => chatUser.user)
   chatUser: ChatsUserEntity[];
 
+  @OneToMany(() => MessageEntity, (messages) => messages.user)
+  messages: MessageEntity[];
+
   @BeforeInsert()
   async hashPassword() {
     this.password = await bcrypt.hash(this.password, 6);
