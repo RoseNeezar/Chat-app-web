@@ -25,3 +25,5 @@ export interface IChatGroupDto {
   channelId: number;
   userId: number;
 }
+
+export type IDeleteChatDto = Pick<IMessageDto, 'channelId'>;

@@ -1,8 +1,22 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/get-user.decorator';
 import UserEntity from 'src/entities/user/user.entity';
-import { ChatDto, IChatGroupDto, IMessageDto } from './chat.dto';
+import {
+  ChatDto,
+  IChatGroupDto,
+  IDeleteChatDto,
+  IMessageDto,
+} from './chat.dto';
 import { ChatService } from './chat.service';
 
 @Controller('api/chat')
@@ -36,5 +50,11 @@ export class ChatController {
   @Post('/join-group')
   addUserToGroup(@Body() chatGroupDto: IChatGroupDto): Promise<any> {
     return this.chatService.addUserToGroup(chatGroupDto);
+  }
+
+  @Delete('/:channelId')
+  deleteChannel(@Param('channelId') channelId: number): Promise<any> {
+    console.log('del', channelId);
+    return this.chatService.deleteChannel(channelId);
   }
 }

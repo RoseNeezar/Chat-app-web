@@ -8,7 +8,7 @@ import { UserRepository } from 'src/entities/user/user.repository';
 import { getConnection, getManager } from 'typeorm';
 import ChannelEntity from 'src/entities/channel/channel.entity';
 import ChatsUserEntity from 'src/entities/chatUser/chat-user.entity';
-import { IChatGroupDto, IMessageDto } from './chat.dto';
+import { IChatGroupDto, IDeleteChatDto, IMessageDto } from './chat.dto';
 import MessageEntity from 'src/entities/messages/messages.entity';
 
 @Injectable()
@@ -175,5 +175,25 @@ export class ChatService {
     }
 
     return { channel, newChatter };
+  }
+
+  async deleteChannel(channelId: number) {
+    try {
+      const channel = await this.channelRepo
+        .createQueryBuilder('ch')
+        .where('ch.id = :channelId', { channelId })
+        .leftJoinAndSelect('ch.chatUser', 'chatUser')
+        .leftJoinAndSelect('chatUser.user', 'user')
+        .getOne();
+
+      const notifyUsers = channel.chatUser.map((user) => user.userId);
+
+      await this.channelRepo.delete({ id: channelId });
+
+      return { channelId, notifyUsers };
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException();
+    }
   }
 }

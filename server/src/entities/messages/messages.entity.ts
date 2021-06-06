@@ -27,14 +27,18 @@ export default class MessageEntity extends Entity {
   @Column({ nullable: true })
   fromUserId: number;
 
-  @ManyToOne(() => UserEntity, (user) => user.messages)
+  @ManyToOne(() => UserEntity, (user) => user.messages, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'fromUserId' })
   user: UserEntity;
 
   @Column({ nullable: true })
   channelId: number;
 
-  @ManyToOne(() => ChannelEntity, (channel) => channel.message)
+  @ManyToOne(() => ChannelEntity, (channel) => channel.message, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   channel: ChannelEntity;
 }
