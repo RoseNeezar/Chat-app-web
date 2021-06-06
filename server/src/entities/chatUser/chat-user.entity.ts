@@ -16,11 +16,15 @@ export default class ChatsUserEntity extends Entity {
   @Column({ nullable: true })
   userId: number;
 
-  @ManyToOne(() => ChannelEntity, (channel) => channel.chatUser)
+  @ManyToOne(() => ChannelEntity, (channel) => channel.chatUser, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   channel: ChannelEntity;
 
-  @ManyToOne(() => UserEntity, (user) => user.chatUser)
+  @ManyToOne(() => UserEntity, (user) => user.chatUser, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
   user: UserEntity;
 }
