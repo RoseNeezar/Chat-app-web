@@ -11,12 +11,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/get-user.decorator';
 import UserEntity from 'src/entities/user/user.entity';
-import {
-  ChatDto,
-  IChatGroupDto,
-  IDeleteChatDto,
-  IMessageDto,
-} from './chat.dto';
+import { ChatDto, IChatGroupDto, ILeaveGroup, IMessageDto } from './chat.dto';
 import { ChatService } from './chat.service';
 
 @Controller('api/chat')
@@ -50,6 +45,14 @@ export class ChatController {
   @Post('/join-group')
   addUserToGroup(@Body() chatGroupDto: IChatGroupDto): Promise<any> {
     return this.chatService.addUserToGroup(chatGroupDto);
+  }
+
+  @Post('/leave-group')
+  leaveGroup(
+    @Body() leaveGroupDto: ILeaveGroup,
+    @GetUser() user: UserEntity,
+  ): Promise<any> {
+    return this.chatService.leaveCurrentChannel(leaveGroupDto.channelId, user);
   }
 
   @Delete('/:channelId')
