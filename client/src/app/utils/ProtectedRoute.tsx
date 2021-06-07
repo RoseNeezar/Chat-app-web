@@ -1,21 +1,30 @@
-import React, { FC, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import React, { FC, useEffect, useState } from "react";
 import { Redirect, Route, RouteProps } from "react-router";
-import { ACurrentUser } from "../redux/actions/auth";
-import { IState } from "../redux/reducers/rootReducer";
 
 const ProtectedRoute: FC<RouteProps> = ({ children, ...rest }) => {
-  const currentUser = useSelector((state: IState) => state.authReducer.user);
-  const dispatch = useDispatch();
+  const [isLogged, setIsLogged] = useState(true);
+  const isAuth = async () => {
+    const check = await axios
+      .get("/auth/me")
+      .then((user) => {
+        return true;
+      })
+      .catch((err) => {
+        return false;
+      });
+
+    setIsLogged(check);
+  };
   useEffect(() => {
-    dispatch(ACurrentUser());
+    isAuth();
   }, []);
-  console.log("curre", currentUser);
+
   return (
     <Route
       {...rest}
       render={({ location }) =>
-        currentUser ? (
+        isLogged ? (
           children
         ) : (
           <Redirect
