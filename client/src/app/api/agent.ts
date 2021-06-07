@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios";
+import { IChannel } from "../redux/types/chat.type";
 import {
   ILogin,
   IUser,
@@ -24,8 +25,13 @@ const AuthService = {
   currentUser: () => requests.get<IUserContent>("auth/me"),
 };
 
+const ChatService = {
+  fetchChats: () => requests.get<IChannel[]>("/chat"),
+};
+
 const agent = {
   AuthService,
+  ChatService,
 };
 
 export default agent;

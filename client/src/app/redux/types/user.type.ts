@@ -11,11 +11,17 @@ export const REGISTER_TYPE_ERROR = "REGISTER_TYPE_ERROR";
 export const LOGOUT = "LOGOUT";
 
 export const CURRENT_USER = "CURRENT_USER";
+export const CURRENT_USER_LOADING = "CURRENT_USER_LOADING";
 export const CURRENT_USER_ERROR = "CURRENT_USER_ERROR";
 
 export interface ICurrentUserAction {
   type: typeof CURRENT_USER;
+  apiState: Partial<IApiState>;
   payload: IUser;
+}
+export interface ICurrentUserLoading {
+  type: typeof CURRENT_USER_LOADING;
+  apiState: Partial<IApiState>;
 }
 export interface ICurrentUserActionError {
   type: typeof CURRENT_USER_ERROR;
@@ -23,6 +29,7 @@ export interface ICurrentUserActionError {
 }
 export interface ILoginAction {
   type: typeof LOGIN_TYPE;
+  apiState: Partial<IApiState>;
   payload: IUser;
 }
 
@@ -63,7 +70,8 @@ export type AuthDispatchTypes =
   | IRegisterActionError
   | ILogout
   | ICurrentUserAction
-  | ICurrentUserActionError;
+  | ICurrentUserActionError
+  | ICurrentUserLoading;
 
 export interface IUser {
   user: IUserContent;

@@ -1,11 +1,10 @@
 import React from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import Main from "../app/PageComponent/Main";
-
-import Login from "../app/PageComponent/login/Login";
-import Register from "../app/PageComponent/register/Register";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Navbar from "../app/components/Navbar/Navbar";
+import Login from "../app/PageComponent/login/Login";
+import Main from "../app/PageComponent/Main";
 import NotFound from "../app/PageComponent/NotFound/NotFound";
+import Register from "../app/PageComponent/register/Register";
 import ProtectedRoute from "../app/utils/ProtectedRoute";
 
 const App = () => {
