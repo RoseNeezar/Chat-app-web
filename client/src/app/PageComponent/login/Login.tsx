@@ -7,8 +7,8 @@ import { IState } from "../../redux/reducers/rootReducer";
 import { errorHelper } from "../../utils/error-serial";
 
 const Login: FC = () => {
-  const registerError = useSelector(
-    (state: IState) => state.authReducer.apiState.IARegister?.error
+  const loginError = useSelector(
+    (state: IState) => state.authReducer.apiState.IALogin?.error
   );
   const dispatch = useDispatch();
   const history = useHistory();
@@ -42,7 +42,7 @@ const Login: FC = () => {
             value={username}
             setValue={onChangeText}
             placeholder="Username"
-            error={errorHelper(registerError?.message as any, "Username")}
+            error={errorHelper(loginError?.message as any, "Username")}
           />
           <InputGroup
             className="mb-4"
@@ -50,7 +50,7 @@ const Login: FC = () => {
             value={password}
             setValue={onChangeText}
             placeholder="Password"
-            error={errorHelper(registerError?.message as any, "Password")}
+            error={errorHelper(loginError?.message as any, "Password")}
           />
 
           <button className="self-center w-1/2 py-6 mt-10 mb-4 text-lg font-bold text-white uppercase rounded-2xl bg-dark-main">
