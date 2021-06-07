@@ -5,6 +5,7 @@ export const initialState: IAuth = {
   apiState: {
     IALogin: defaultApiState,
     IARegister: defaultApiState,
+    IACurrentUser: defaultApiState,
   },
   user: undefined,
 };
@@ -65,6 +66,12 @@ const authReducer = (
       return {
         ...state,
         user: action.payload.user,
+        apiState: { IACurrentUser: { ...defaultApiState, success: true } },
+      };
+    case "CURRENT_USER_LOADING":
+      return {
+        ...state,
+        apiState: { IACurrentUser: { ...defaultApiState, loading: true } },
       };
     case "CURRENT_USER_ERROR":
       return {
