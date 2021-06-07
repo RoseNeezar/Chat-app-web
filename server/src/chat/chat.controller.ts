@@ -11,13 +11,27 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/get-user.decorator';
 import UserEntity from 'src/entities/user/user.entity';
-import { ChatDto, IChatGroupDto, ILeaveGroup, IMessageDto } from './chat.dto';
+import {
+  IChatGroupDto,
+  ICreateChannelDto,
+  ILeaveGroup,
+  IMessageDto,
+} from './chat.dto';
 import { ChatService } from './chat.service';
 
 @Controller('api/chat')
 @UseGuards(AuthGuard())
 export class ChatController {
   constructor(private chatService: ChatService) {}
+
+  @Get('/search-user/:username')
+  @UseGuards(AuthGuard())
+  searchUser(
+    @Param('username') username: string,
+    @GetUser() user: UserEntity,
+  ): Promise<any> {
+    return this.chatService.searchUser(username, user);
+  }
 
   @Get('/')
   @UseGuards(AuthGuard())
@@ -27,7 +41,7 @@ export class ChatController {
 
   @Post('/create-channel')
   createChannel(
-    @Body() chatDto: ChatDto,
+    @Body() chatDto: ICreateChannelDto,
     @GetUser() user: UserEntity,
   ): Promise<any> {
     return this.chatService.createChannel(chatDto.partnerId, user);
@@ -57,7 +71,6 @@ export class ChatController {
 
   @Delete('/:channelId')
   deleteChannel(@Param('channelId') channelId: number): Promise<any> {
-    console.log('del', channelId);
     return this.chatService.deleteChannel(channelId);
   }
 }

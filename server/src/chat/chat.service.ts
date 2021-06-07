@@ -1,15 +1,14 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ChatUserRepository } from 'src/entities/chatUser/chat-user.repository';
+import ChannelEntity from 'src/entities/channel/channel.entity';
 import { ChannelRepository } from 'src/entities/channel/channel.repository';
+import ChatsUserEntity from 'src/entities/chatUser/chat-user.entity';
+import { ChatUserRepository } from 'src/entities/chatUser/chat-user.repository';
 import { MessageRepository } from 'src/entities/messages/messages.repository';
 import UserEntity from 'src/entities/user/user.entity';
 import { UserRepository } from 'src/entities/user/user.repository';
-import { getConnection, getManager } from 'typeorm';
-import ChannelEntity from 'src/entities/channel/channel.entity';
-import ChatsUserEntity from 'src/entities/chatUser/chat-user.entity';
+import { getManager } from 'typeorm';
 import { IChatGroupDto, IMessageDto } from './chat.dto';
-import MessageEntity from 'src/entities/messages/messages.entity';
 
 @Injectable()
 export class ChatService {
@@ -227,6 +226,21 @@ export class ChatService {
       };
     } catch (error) {
       console.log(error);
+      throw new BadRequestException();
+    }
+  }
+
+  async searchUser(username: string, user: UserEntity) {
+    try {
+      const users = await this.userRepo
+        .createQueryBuilder('usr')
+        .where('LOWER(usr.username) LIKE :username', {
+          username: `%${username.toLowerCase()}%`,
+        })
+        .getMany();
+      const result = users.filter((usr) => usr.id !== user.id);
+      return result;
+    } catch (error) {
       throw new BadRequestException();
     }
   }
