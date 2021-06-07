@@ -5,7 +5,7 @@ import { ACurrentUser } from "../redux/actions/auth";
 import { AFetchChat } from "../redux/actions/chat";
 import useSocket from "../utils/socketConnect";
 import ChannelList from "./messenger/ChannelList/ChannelList";
-import Messages from "./messenger/Messages/Messages";
+import Messages from "./messenger/Messages/MessageBox";
 
 const Main = () => {
   // useSocket();

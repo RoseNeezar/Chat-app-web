@@ -16,11 +16,18 @@ const Channel: FC<IChannel> = ({ channelItem }) => {
 
   return (
     <div
-      className="p-3 mt-2 bg-dark-third rounded-2xl"
+      className="p-3 mt-2 cursor-pointer bg-dark-third rounded-2xl"
       onClick={() => handleCurrentChannel()}
     >
       {channelItem.type === "dual" ? (
-        <p>{channelItem.chatUser[0].user.username}</p>
+        <div className="flex flex-row items-center justify-between">
+          <div className="flex items-center justify-center w-10 h-10 rounded-full text-dark-txt bg-dark-main">
+            {channelItem.chatUser[0].user.username[0].toUpperCase()}
+          </div>
+          <p className="text-dark-txt">
+            {channelItem.chatUser[0].user.username}
+          </p>
+        </div>
       ) : (
         <p>Group - {channelItem.chatUser.map((usr) => usr.user.username[0])}</p>
       )}

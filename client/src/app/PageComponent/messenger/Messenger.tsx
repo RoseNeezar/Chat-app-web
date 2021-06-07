@@ -1,6 +1,6 @@
 import React from "react";
 import ChannelList from "./ChannelList/ChannelList";
-import Messages from "./Messages/Messages";
+import MessageBox from "./Messages/MessageBox";
 
 const Messenger = () => {
   return (
@@ -10,7 +10,7 @@ const Messenger = () => {
       </div>
 
       <div className="w-full h-full px-2 pt-32 xl:w-4/5 xl:ml-16 lg:pt-16">
-        <Messages />
+        <MessageBox />
       </div>
     </>
   );
