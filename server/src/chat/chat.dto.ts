@@ -1,29 +1,15 @@
-import {
-  IsString,
-  MinLength,
-  MaxLength,
-  IsEmail,
-  Length,
-  IsNumber,
-} from 'class-validator';
-
-export class ChatDto {
-  @IsNumber()
+export interface ChatDto {
   partnerId: number;
-
-  constructor(partnerId: number) {
-    this.partnerId = partnerId;
-  }
-}
-
-export interface IMessageDto {
+  username: string;
   channelId: number;
   getPage: number;
-}
-
-export interface IChatGroupDto {
-  channelId: number;
   userId: number;
 }
 
-export type ILeaveGroup = Pick<IMessageDto, 'channelId'>;
+export type ICreateChannelDto = Pick<ChatDto, 'partnerId'>;
+
+export type IMessageDto = Pick<ChatDto, 'channelId' | 'getPage'>;
+
+export type IChatGroupDto = Pick<ChatDto, 'channelId' | 'userId'>;
+
+export type ILeaveGroup = Pick<ChatDto, 'channelId'>;
