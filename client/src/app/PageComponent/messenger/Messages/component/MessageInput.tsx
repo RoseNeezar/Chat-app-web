@@ -2,7 +2,7 @@ import React from "react";
 
 const MessageInput = () => {
   return (
-    <div className="flex space-x-2">
+    <div className="flex space-x-2 ">
       <div className="flex items-center justify-between flex-1 px-3 bg-gray-100 rounded-full dark:bg-dark-third">
         <input
           type="text"
