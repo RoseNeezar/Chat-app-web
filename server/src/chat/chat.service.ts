@@ -21,21 +21,35 @@ export class ChatService {
   ) {}
 
   async getChannels(user: UserEntity) {
-    const channel = await this.userRepo
-      .createQueryBuilder('usr')
-      .where(`"usr"."id" = ${user.id} `)
-      .leftJoinAndSelect('usr.chatUser', 'cu')
-      .leftJoinAndSelect('cu.channel', 'ch')
-      .leftJoinAndSelect('ch.chatUser', 'chatUser')
-      .leftJoinAndSelect('chatUser.user', 'user')
-      .andWhere(`NOT "user"."id" = ${user.id}`)
-      .leftJoinAndSelect('ch.message', 'message')
-      .leftJoinAndSelect('message.user', 'fromUser')
-      .limit(20)
-      .orderBy('message.id', 'DESC')
-      .getOne();
+    try {
+      const channel = await this.userRepo
+        .createQueryBuilder('usr')
+        .where(`"usr"."id" = ${user.id} `)
+        .leftJoinAndSelect('usr.chatUser', 'cu')
+        .leftJoinAndSelect('cu.channel', 'ch')
+        .leftJoinAndSelect('ch.chatUser', 'chatUser')
+        .leftJoinAndSelect('chatUser.user', 'user')
+        .andWhere(`NOT "user"."id" = ${user.id}`)
+        .getOne();
 
-    return channel.chatUser;
+      const result = channel.chatUser.map(async (ch) => {
+        ch.channel.message = await this.messageRepo
+          .createQueryBuilder('msg')
+          .where('msg.channelId = :channelId', { channelId: ch.channel.id })
+          .leftJoinAndSelect('msg.user', 'user')
+          .take(20)
+          .orderBy('msg.id', 'DESC')
+          .getMany();
+      });
+      await Promise.all(result);
+      if (!channel) {
+        return [];
+      }
+      return channel.chatUser;
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException();
+    }
   }
 
   async createChannel(partnerId: number, user: UserEntity) {
