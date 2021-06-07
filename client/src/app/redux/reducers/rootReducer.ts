@@ -1,10 +1,13 @@
-import { AnyAction, combineReducers } from "redux";
 import { HYDRATE } from "next-redux-wrapper";
-import authReducer from "./auth";
+import { AnyAction, combineReducers } from "redux";
+import { IChat } from "../types/chat.type";
 import { IAuth } from "../types/user.type";
+import authReducer from "./auth";
+import chatReducer from "./chat";
 
 export type IState = {
   authReducer: IAuth;
+  chatReducer: IChat;
 };
 
 const RootReducer = (state: IState | undefined, action: AnyAction | any) => {
@@ -15,6 +18,7 @@ const RootReducer = (state: IState | undefined, action: AnyAction | any) => {
     default: {
       const combineReducer = combineReducers({
         authReducer,
+        chatReducer,
       });
       return combineReducer(state, action);
     }
