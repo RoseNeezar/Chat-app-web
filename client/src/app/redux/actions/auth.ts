@@ -1,7 +1,7 @@
 import { NextRouter } from "next/dist/client/router";
 import { RouteComponentProps } from "react-router";
 import { Dispatch } from "redux";
-import agent from "../../api/authAgent";
+import agent from "../../api/agent";
 import {
   ILogin,
   AuthDispatchTypes,
@@ -15,6 +15,7 @@ import {
   LOGIN_TYPE_ERROR,
   CURRENT_USER,
   CURRENT_USER_ERROR,
+  CURRENT_USER_LOADING,
 } from "../types/user.type";
 
 export const ALogin =
@@ -91,8 +92,20 @@ export const ALogout =
 export const ACurrentUser =
   () => async (dispatch: Dispatch<AuthDispatchTypes>) => {
     try {
+      dispatch({
+        type: CURRENT_USER_LOADING,
+        apiState: {
+          loading: true,
+        },
+      });
       const user = await agent.AuthService.currentUser();
-      dispatch({ type: CURRENT_USER, payload: { user } });
+      dispatch({
+        type: CURRENT_USER,
+        payload: { user },
+        apiState: {
+          success: true,
+        },
+      });
     } catch (error) {
       dispatch({
         type: CURRENT_USER_ERROR,
