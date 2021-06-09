@@ -1,13 +1,25 @@
-import { useEffect } from "react";
+import { Dispatch, useEffect } from "react";
 import socketClient from "socket.io-client";
+import {
+  AFetchChat,
+  AReceivedMessage,
+  ASetSocket,
+} from "../redux/actions/chat";
+import { IUserContent } from "../redux/types/user.type";
 
-const useSocket = () => {
+const useSocket = (user: IUserContent, dispatch: Dispatch<any>) => {
   useEffect(() => {
-    const socket = socketClient.connect("http://127.0.0.1:5050");
-    socket.on("message", (msg: string) => {
-      console.log(msg);
+    dispatch(AFetchChat());
+    const socket = socketClient.connect("http://localhost:3005/api", {
+      path: "/api/socket.io",
     });
-    socket.emit("message", { msg: "hey from client" });
+    dispatch(ASetSocket(socket));
+    socket.emit("join", user);
+    // socket.emit("message", { msg: "hey from client" });
+    // socket.on("received", (message: any) => {
+    //   console.log("message", message);
+    //   dispatch(AReceivedMessage(message, user.id));
+    // });
   }, []);
 };
 
