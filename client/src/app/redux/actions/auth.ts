@@ -1,21 +1,20 @@
-import { NextRouter } from "next/dist/client/router";
 import { RouteComponentProps } from "react-router";
 import { Dispatch } from "redux";
 import agent from "../../api/agent";
 import {
-  ILogin,
   AuthDispatchTypes,
-  LOGIN_TYPE,
-  IRegister,
-  REGISTER_TYPE,
-  LOGOUT,
-  REGISTER_TYPE_LOADING,
-  REGISTER_TYPE_ERROR,
-  LOGIN_TYPE_LOADING,
-  LOGIN_TYPE_ERROR,
   CURRENT_USER,
   CURRENT_USER_ERROR,
   CURRENT_USER_LOADING,
+  ILogin,
+  IRegister,
+  LOGIN_TYPE,
+  LOGIN_TYPE_ERROR,
+  LOGIN_TYPE_LOADING,
+  LOGOUT,
+  REGISTER_TYPE,
+  REGISTER_TYPE_ERROR,
+  REGISTER_TYPE_LOADING,
 } from "../types/user.type";
 
 export const ALogin =
@@ -31,9 +30,7 @@ export const ALogin =
       const user = await agent.AuthService.login(param);
       dispatch({
         type: LOGIN_TYPE,
-        payload: {
-          user,
-        },
+        payload: user,
         apiState: {
           success: true,
         },
@@ -63,9 +60,7 @@ export const ARegister =
       const user = await agent.AuthService.register(param);
       dispatch({
         type: REGISTER_TYPE,
-        payload: {
-          user,
-        },
+        payload: user,
         apiState: {
           success: true,
         },
@@ -83,10 +78,11 @@ export const ARegister =
   };
 
 export const ALogout =
-  (router: NextRouter) => async (dispatch: Dispatch<AuthDispatchTypes>) => {
+  (history: RouteComponentProps["history"]) =>
+  async (dispatch: Dispatch<AuthDispatchTypes>) => {
     await agent.AuthService.logout();
     dispatch({ type: LOGOUT });
-    router.push("/login");
+    history.push("/login");
   };
 
 export const ACurrentUser =
@@ -101,7 +97,7 @@ export const ACurrentUser =
       const user = await agent.AuthService.currentUser();
       dispatch({
         type: CURRENT_USER,
-        payload: { user },
+        payload: user,
         apiState: {
           success: true,
         },

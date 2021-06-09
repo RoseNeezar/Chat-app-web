@@ -18,7 +18,7 @@ const authReducer = (
     case "LOGIN":
       return {
         ...state,
-        user: action.payload.user,
+        user: action.payload,
         apiState: { IALogin: { ...defaultApiState, success: true } },
       };
     case "LOGIN_TYPE_LOADING":
@@ -39,7 +39,7 @@ const authReducer = (
     case "REGISTER":
       return {
         ...state,
-        user: action.payload.user,
+        user: action.payload,
         apiState: { IARegister: { ...defaultApiState, success: true } },
       };
     case "REGISTER_TYPE_LOADING":
@@ -65,7 +65,7 @@ const authReducer = (
     case "CURRENT_USER":
       return {
         ...state,
-        user: action.payload.user,
+        user: action.payload,
         apiState: { IACurrentUser: { ...defaultApiState, success: true } },
       };
     case "CURRENT_USER_LOADING":

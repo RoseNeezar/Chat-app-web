@@ -1,4 +1,5 @@
 import { IApiState } from "../../../types/defaultApiState";
+import { User } from "./chat.type";
 
 export const LOGIN_TYPE = "LOGIN";
 export const LOGIN_TYPE_LOADING = "LOGIN_TYPE_LOADING";
@@ -17,7 +18,7 @@ export const CURRENT_USER_ERROR = "CURRENT_USER_ERROR";
 export interface ICurrentUserAction {
   type: typeof CURRENT_USER;
   apiState: Partial<IApiState>;
-  payload: IUser;
+  payload: User;
 }
 export interface ICurrentUserLoading {
   type: typeof CURRENT_USER_LOADING;
@@ -30,7 +31,7 @@ export interface ICurrentUserActionError {
 export interface ILoginAction {
   type: typeof LOGIN_TYPE;
   apiState: Partial<IApiState>;
-  payload: IUser;
+  payload: User;
 }
 
 export interface ILoginActionLoading {
@@ -45,7 +46,7 @@ export interface ILoginActionError {
 export interface IRegisterAction {
   type: typeof REGISTER_TYPE;
   apiState: Partial<IApiState>;
-  payload: IUser;
+  payload: User;
 }
 
 export interface IRegisterActionLoading {
@@ -73,17 +74,6 @@ export type AuthDispatchTypes =
   | ICurrentUserActionError
   | ICurrentUserLoading;
 
-export interface IUser {
-  user: IUserContent;
-}
-
-export interface IUserContent {
-  username: string;
-  email: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
 export interface ILogin {
   username: string;
   password: string;
@@ -103,5 +93,5 @@ export interface IAuthState {
 
 export interface IAuth {
   apiState: Partial<IAuthState>;
-  user?: IUserContent;
+  user?: User;
 }
