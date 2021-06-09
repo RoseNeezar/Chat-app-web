@@ -4,7 +4,9 @@ import {
   Channel,
   ChatDispatchTypes,
   FETCH_CHATS_TYPES,
+  RECEIVED_MESSAGE,
   SET_CURRENT_CHAT_TYPES,
+  SET_SOCKET,
 } from "../types/chat.type";
 
 export const AFetchChat =
@@ -30,4 +32,15 @@ export const AFetchChat =
 export const ASetCurrentChat =
   (channel: Channel) => (dispatch: Dispatch<ChatDispatchTypes>) => {
     dispatch({ type: SET_CURRENT_CHAT_TYPES, payload: channel });
+  };
+
+export const ASetSocket =
+  (socket: SocketIOClient.Socket) =>
+  (dispatch: Dispatch<ChatDispatchTypes>) => {
+    dispatch({ type: SET_SOCKET, payload: socket });
+  };
+
+export const AReceivedMessage =
+  (message: any, userId: number) => (dispatch: Dispatch<ChatDispatchTypes>) => {
+    dispatch({ type: RECEIVED_MESSAGE, payload: { message, userId } });
   };
