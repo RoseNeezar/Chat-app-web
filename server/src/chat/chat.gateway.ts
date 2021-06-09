@@ -5,12 +5,12 @@ import {
   MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
-  OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import ChannelEntity from 'src/entities/channel/channel.entity';
 import MessageEntity from 'src/entities/messages/messages.entity';
 import { MessageRepository } from 'src/entities/messages/messages.repository';
 import UserEntity from 'src/entities/user/user.entity';
@@ -31,52 +31,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private users = new Map();
   private userSockets = new Map();
 
-  @SubscribeMessage('message')
-  async handleMessage(
-    @MessageBody() message: MessageEntity & { toUserId: string[] },
-    @ConnectedSocket() client: Socket,
-  ) {
-    console.log('yooooooo');
-    let sockets = [];
-
-    if (this.users.has(message.fromUserId)) {
-      sockets = this.users.get(message.fromUserId).sockets;
-    }
-
-    message.toUserId.forEach((id) => {
-      if (this.users.has(id)) {
-        sockets = [...sockets, ...this.users.get(id).sockets];
-      }
-    });
-
-    try {
-      const msg = {
-        type: message.type,
-        fromUserId: message.fromUserId,
-        channelId: message.channelId,
-        message: message.message,
-      };
-
-      const savedMessage = await this.messageRepo.create(msg).save();
-      const messenger: any = {};
-
-      messenger.fromUserId = message.fromUserId;
-      messenger.id = savedMessage.id;
-      messenger.message = savedMessage.message;
-
-      sockets.forEach((socket) => {
-        this.server.to(socket).emit('received', messenger);
-      });
-    } catch (e) {}
-  }
-
   @SubscribeMessage('join')
   async handleJoin(
     @MessageBody() user: UserEntity,
     @ConnectedSocket() client: Socket,
   ) {
     let sockets = [];
-    console.log('----', user);
+
     if (typeof user !== null && this.users.has(user.id)) {
       const existingUser = this.users.get(user.id);
       existingUser.sockets = [...existingUser.sockets, ...[client.id]];
@@ -109,6 +70,164 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       try {
         this.server.to(socket).emit('friends', onlineFriends);
       } catch (e) {}
+    });
+  }
+
+  @SubscribeMessage('message')
+  async handleMessage(
+    @MessageBody() message: MessageEntity & { toUserId: string[] },
+    @ConnectedSocket() client: Socket,
+  ) {
+    let sockets = [];
+
+    if (this.users.has(message.fromUserId)) {
+      sockets = this.users.get(message.fromUserId).sockets;
+    }
+
+    message.toUserId.forEach((id) => {
+      if (this.users.has(id)) {
+        sockets = [...sockets, ...this.users.get(id).sockets];
+      }
+    });
+
+    try {
+      const msg: Partial<MessageEntity> = {
+        type: message.type,
+        fromUserId: message.fromUserId,
+        channelId: message.channelId,
+        message: message.message,
+        user: message.user,
+      };
+
+      const savedMessage = await this.messageRepo.create(msg).save();
+
+      console.log(savedMessage);
+      sockets.forEach((socket) => {
+        this.server.to(socket).emit('received', savedMessage);
+      });
+    } catch (e) {}
+  }
+
+  @SubscribeMessage('typing')
+  async handleTyping(
+    @MessageBody() message: MessageEntity & { toUserId: string[] },
+    @ConnectedSocket() client: Socket,
+  ) {
+    message.toUserId.forEach((id) => {
+      if (this.users.has(id)) {
+        this.users.get(id).sockets.forEach((socket) => {
+          this.server.to(socket).emit('typing', message);
+        });
+      }
+    });
+  }
+
+  @SubscribeMessage('add-friend')
+  async handleAddFriends(
+    @MessageBody() channel: ChannelEntity,
+    @ConnectedSocket() client: Socket,
+  ) {
+    try {
+      let online = 'offline';
+      if (this.users.has(channel[1].Users[0].id)) {
+        online = 'online';
+        channel[0].Users[0].status = 'online';
+        this.users.get(channel[1].Users[0].id).sockets.forEach((socket) => {
+          this.server.to(socket).emit('new-chat', channel[0]);
+        });
+      }
+
+      if (this.users.has(channel[0].Users[0].id)) {
+        channel[1].Users[0].status = online;
+        this.users.get(channel[0].Users[0].id).sockets.forEach((socket) => {
+          this.server.to(socket).emit('new-chat', channel[1]);
+        });
+      }
+    } catch (e) {}
+  }
+
+  @SubscribeMessage('add-user-to-group')
+  async handleAddUserToGroup(
+    @MessageBody()
+    items: {
+      channel: ChannelEntity & any;
+      newChatter: UserEntity & { status: string };
+    },
+    @ConnectedSocket() client: Socket,
+  ) {
+    const { channel, newChatter } = items;
+    if (this.users.has(newChatter.id)) {
+      newChatter.status = 'online';
+      newChatter.password = '';
+    }
+
+    // old users
+    channel.chatUser.forEach((user, index) => {
+      if (this.users.has(user.id)) {
+        channel.chatUser[index].status = 'online';
+        this.users.get(user.id).sockets.forEach((socket) => {
+          try {
+            this.server.to(socket).emit('added-user-to-group', {
+              channel,
+              chatters: [newChatter],
+            });
+          } catch (e) {}
+        });
+      }
+    });
+
+    // send to new chatter
+    if (this.users.has(newChatter.id)) {
+      this.users.get(newChatter.id).sockets.forEach((socket) => {
+        try {
+          this.server.to(socket).emit('added-user-to-group', {
+            channel,
+            chatters: channel.chatUser,
+          });
+        } catch (e) {}
+      });
+    }
+  }
+
+  @SubscribeMessage('leave-current-channel')
+  async handleLeaveChannel(
+    @MessageBody()
+    data: any,
+    @ConnectedSocket() client: Socket,
+  ) {
+    const { chatId, userId, currentUserId, notifyUsers } = data;
+
+    notifyUsers.forEach((id) => {
+      if (this.users.has(id)) {
+        this.users.get(id).sockets.forEach((socket) => {
+          try {
+            this.server.to(socket).emit('remove-user-from-chat', {
+              chatId,
+              userId,
+              currentUserId,
+            });
+          } catch (e) {}
+        });
+      }
+    });
+  }
+
+  @SubscribeMessage('delete-channel')
+  async handleDeleteChannel(
+    @MessageBody()
+    data: any,
+    @ConnectedSocket() client: Socket,
+  ) {
+    const { chatId, notifyUsers } = data;
+
+    notifyUsers.forEach((id) => {
+      if (this.users.has(id)) {
+        this.users.get(id).sockets.forEach((socket) => {
+          try {
+            this.server.to(socket).emit('delete-chat', parseInt(chatId));
+          } catch (e) {}
+        });
+      }
     });
   }
 

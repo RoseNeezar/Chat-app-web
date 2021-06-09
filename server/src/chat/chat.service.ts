@@ -258,4 +258,25 @@ export class ChatService {
       throw new BadRequestException();
     }
   }
+
+  async getChatters(userId: number) {
+    try {
+      const getChattersQuery = `
+      select "cu"."userId" from "ChatUsers" as cu
+      inner join (
+          select "c"."id" from "Channel" as c
+          where exists (
+              select "u"."id" from "User" as u
+              inner join "ChatUsers" on u.id = "ChatUsers"."userId"
+              where u.id = ${userId} and c.id = "ChatUsers"."channelId"
+          )
+      ) as cjoin on cjoin.id = "cu"."channelId"
+      where "cu"."userId" != ${userId}
+  `;
+      const result = await this.chatUserRepo.manager.query(getChattersQuery);
+      return result.length > 0 ? result.map((el) => el.userId) : [];
+    } catch (error) {
+      return [];
+    }
+  }
 }
