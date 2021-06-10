@@ -17,6 +17,7 @@
     "next-redux-wrapper": "^6.0.2",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
+    "react-native-web": "^0.16.5",
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
     "react-toastify": "^7.0.4",
@@ -24,6 +25,7 @@
     "redux-devtools-extension": "^2.13.9",
     "redux-thunk": "^2.3.0",
     "socket.io-client": "^2.3.1",
+    "tailwind-rn": "^3.0.1",
     "zustand": "^3.5.1"
   },
   "devDependencies": {
@@ -34,6 +36,7 @@
     "@types/react-native": "^0.64.8",
     "@types/socket.io-client": "^1.4.34",
     "autoprefixer": "^10.2.5",
+    "babel-plugin-react-native-web": "^0.16.5",
     "postcss": "^8.3.0",
     "tailwindcss": "^2.1.2",
     "typescript": "4.0"
