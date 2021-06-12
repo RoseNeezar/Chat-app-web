@@ -5,9 +5,9 @@ import {
   AReceivedMessage,
   ASetSocket,
 } from "../redux/actions/chat";
-import { IUserContent } from "../redux/types/user.type";
+import { Message, User } from "../redux/types/chat.type";
 
-const useSocket = (user: IUserContent, dispatch: Dispatch<any>) => {
+const useSocket = (user: User, dispatch: Dispatch<any>) => {
   useEffect(() => {
     dispatch(AFetchChat());
     const socket = socketClient.connect("http://localhost:3005/api", {
@@ -15,11 +15,10 @@ const useSocket = (user: IUserContent, dispatch: Dispatch<any>) => {
     });
     dispatch(ASetSocket(socket));
     socket.emit("join", user);
-    // socket.emit("message", { msg: "hey from client" });
-    // socket.on("received", (message: any) => {
-    //   console.log("message", message);
-    //   dispatch(AReceivedMessage(message, user.id));
-    // });
+
+    socket.on("received", (message: Message) => {
+      dispatch(AReceivedMessage(message, user.id));
+    });
   }, []);
 };
 

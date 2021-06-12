@@ -38,7 +38,7 @@ export class ChatService {
           .where('msg.channelId = :channelId', { channelId: ch.channel.id })
           .leftJoinAndSelect('msg.user', 'user')
           .take(20)
-          .orderBy('msg.id', 'DESC')
+          .orderBy('msg.createAt', 'DESC')
           .getMany();
       });
       await Promise.all(result);
@@ -131,6 +131,7 @@ export class ChatService {
       .createQueryBuilder('msg')
       .where('msg.channelId = :channelId', { channelId: channelId })
       .leftJoinAndSelect('msg.user', 'user')
+      .orderBy('msg.id', 'DESC')
       .skip(offset)
       .take(limit)
       .getManyAndCount();
@@ -246,6 +247,9 @@ export class ChatService {
 
   async searchUser(username: string, user: UserEntity) {
     try {
+      if (!username) {
+        return [];
+      }
       const users = await this.userRepo
         .createQueryBuilder('usr')
         .where('LOWER(usr.username) LIKE :username', {
@@ -255,7 +259,7 @@ export class ChatService {
       const result = users.filter((usr) => usr.id !== user.id);
       return result;
     } catch (error) {
-      throw new BadRequestException();
+      return [];
     }
   }
 
