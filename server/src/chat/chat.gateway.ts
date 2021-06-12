@@ -108,20 +108,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     } catch (e) {}
   }
 
-  @SubscribeMessage('typing')
-  async handleTyping(
-    @MessageBody() message: MessageEntity & { toUserId: string[] },
-    @ConnectedSocket() client: Socket,
-  ) {
-    message.toUserId.forEach((id) => {
-      if (this.users.has(id)) {
-        this.users.get(id).sockets.forEach((socket) => {
-          this.server.to(socket).emit('typing', message);
-        });
-      }
-    });
-  }
-
   @SubscribeMessage('add-friend')
   async handleAddFriends(
     @MessageBody() channel: ChannelEntity,

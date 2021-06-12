@@ -24,10 +24,10 @@ import { ChatService } from './chat.service';
 export class ChatController {
   constructor(private chatService: ChatService) {}
 
-  @Get('/search-user/:username')
+  @Get('/search-user')
   @UseGuards(AuthGuard())
   searchUser(
-    @Param('username') username: string,
+    @Query('username') username: string,
     @GetUser() user: UserEntity,
   ): Promise<any> {
     return this.chatService.searchUser(username, user);
