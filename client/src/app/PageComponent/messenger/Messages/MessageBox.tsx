@@ -17,7 +17,7 @@ const MessageBox = () => {
           <div className="px-4 py-2 bg-dark-third rounded-t-2xl">
             <MessageHeader channel={currentChanel} />
           </div>
-          <div className="h-full px-4 py-2 overflow-scroll ">
+          <div className="h-full px-2 py-2 overflow-scroll ">
             <MessageContent channel={currentChanel} />
           </div>
           <div className="px-4 py-2 mt-auto bg-dark-third rounded-b-2xl ">

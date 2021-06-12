@@ -24,7 +24,7 @@ const MessageInput: FC<IMessageInput> = ({ channel }) => {
     setMessage(e.target.value);
   };
   const handleSendMessage = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && message.length > 0) {
       const msg: Partial<Message> & { toUserId: ChatUser[] } = {
         type: "text",
         channelId: channel?.id,
