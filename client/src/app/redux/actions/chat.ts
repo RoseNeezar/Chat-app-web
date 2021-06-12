@@ -4,8 +4,9 @@ import {
   Channel,
   ChatDispatchTypes,
   FETCH_CHATS_TYPES,
+  Message,
   RECEIVED_MESSAGE,
-  SET_CURRENT_CHAT_TYPES,
+  SET_CURRENT_CHAT,
   SET_SOCKET,
 } from "../types/chat.type";
 
@@ -17,7 +18,6 @@ export const AFetchChat =
         chat.channel.chatUser.forEach((user) => {
           user.user.status = "offline";
         });
-        chat.channel.message.reverse();
       });
 
       dispatch({
@@ -31,7 +31,7 @@ export const AFetchChat =
 
 export const ASetCurrentChat =
   (channel: Channel) => (dispatch: Dispatch<ChatDispatchTypes>) => {
-    dispatch({ type: SET_CURRENT_CHAT_TYPES, payload: channel });
+    dispatch({ type: SET_CURRENT_CHAT, payload: channel });
   };
 
 export const ASetSocket =
@@ -41,6 +41,24 @@ export const ASetSocket =
   };
 
 export const AReceivedMessage =
-  (message: any, userId: number) => (dispatch: Dispatch<ChatDispatchTypes>) => {
+  (message: Message, userId: number) =>
+  (dispatch: Dispatch<ChatDispatchTypes>) => {
     dispatch({ type: RECEIVED_MESSAGE, payload: { message, userId } });
+  };
+
+export const APaginateMessages =
+  (id: number, page: number) =>
+  async (dispatch: Dispatch<ChatDispatchTypes>) => {
+    try {
+      const result = await agent.ChatService.paginateMessages(id, page);
+      const { messages, pagination } = result;
+      if (typeof messages != "undefined" && messages.length > 0) {
+        const payload = { messages, id, pagination };
+        dispatch({ type: "PAGINATE_MESSAGES", payload: payload });
+        return true;
+      }
+      return false;
+    } catch (error) {
+      throw error;
+    }
   };
