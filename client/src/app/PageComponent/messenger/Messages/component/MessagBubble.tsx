@@ -2,8 +2,6 @@ import React, { FC } from "react";
 import { useSelector } from "react-redux";
 import { IState } from "../../../../redux/reducers/rootReducer";
 import { Message } from "../../../../redux/types/chat.type";
-import tailwind from "tailwind-rn";
-import { View } from "react-native";
 
 interface IMessageBubble {
   message: Message;
@@ -15,18 +13,22 @@ const MessagBubble: FC<IMessageBubble> = ({ message }) => {
   );
   return (
     <div
-      className={`p-2 mb-4 text-sm  w-max ${
-        currentUser === message.user.username
-          ? "bg-dark-main ml-auto p-3"
-          : "bg-dark-third"
-      } rounded-2xl`}
+      className={`w-1/2  ${currentUser === message.user.username && "ml-auto"}`}
     >
-      {currentUser !== message.user.username && (
-        <View style={tailwind("bg-purple-300 text-black uppercase")}>
-          <span className="block font-semibold">{message.user.username}</span>
-        </View>
-      )}
-      <span>{message.message}</span>
+      <div
+        className={`p-2 mb-4 text-sm  max-w-max break-words ${
+          currentUser === message.user.username
+            ? "bg-dark-main ml-auto p-3 text-right"
+            : "bg-dark-third"
+        } rounded-2xl`}
+      >
+        {currentUser !== message.user.username && (
+          <div className="p-1 rounded-md text-dark-txt bg-dark-main">
+            <span className="block font-semibold">{message.user.username}</span>
+          </div>
+        )}
+        <span>{message.message}</span>
+      </div>
     </div>
   );
 };
