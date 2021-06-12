@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { IChannel, User } from "../redux/types/chat.type";
+import { IChannel, IPaginatedMessage, User } from "../redux/types/chat.type";
 import { ILogin, IRegister } from "../redux/types/user.type";
 
 const responseBody = <T>(response: AxiosResponse<T>) => response.data;
@@ -21,8 +21,15 @@ const AuthService = {
 
 const ChatService = {
   fetchChats: () => requests.get<IChannel[]>("/chat"),
+  paginateMessages: (channelId: number, getPage: number) =>
+    axios
+      .get<IPaginatedMessage>("/chat/messages", {
+        params: { channelId, getPage },
+      })
+      .then(responseBody),
+  searchUser: (username: string) =>
+    axios.get(`/chat/search-user`, { params: { username } }).then(responseBody),
 };
-
 const agent = {
   AuthService,
   ChatService,
