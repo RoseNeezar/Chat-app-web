@@ -207,13 +207,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     data: any,
     @ConnectedSocket() client: Socket,
   ) {
-    const { chatId, notifyUsers } = data;
+    const { channelId, notifyUsers } = data;
 
     notifyUsers.forEach((id) => {
       if (this.users.has(id)) {
         this.users.get(id).sockets.forEach((socket) => {
           try {
-            this.server.to(socket).emit('delete-chat', parseInt(chatId));
+            this.server.to(socket).emit('delete-channel', parseInt(channelId));
           } catch (e) {}
         });
       }
