@@ -29,6 +29,8 @@ const ChatService = {
       .then(responseBody),
   searchUser: (username: string) =>
     axios.get(`/chat/search-user`, { params: { username } }).then(responseBody),
+  createChannel: (partnerId: number) =>
+    requests.post("/chat/create-channel", { partnerId }),
 };
 const agent = {
   AuthService,

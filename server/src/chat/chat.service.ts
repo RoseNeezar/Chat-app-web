@@ -10,6 +10,29 @@ import { UserRepository } from 'src/entities/user/user.repository';
 import { getManager } from 'typeorm';
 import { IChatGroupDto, IMessageDto } from './chat.dto';
 
+export interface IChannel {
+  id: number;
+  createAt: Date;
+  updatedAt: Date;
+  channelId: number;
+  userId: number;
+  channel: {
+    id: number;
+    createAt: Date;
+    updatedAt: Date;
+    type: string;
+    chatUser: {
+      id: number;
+      createAt: Date;
+      updatedAt: Date;
+      channelId: number;
+      userId: number;
+      user: any;
+      status?: string;
+    }[];
+    message: any[];
+  };
+}
 @Injectable()
 export class ChatService {
   constructor(
@@ -100,18 +123,54 @@ export class ChatService {
           id: partnerId,
         },
       });
-
-      const forCreator = {
+      console.log('creator----', creator, partner);
+      const forCreator: IChannel = {
         id: channel.id,
-        type: 'dual',
-        Users: [partner],
-        Messages: [],
+        createAt: channel.createAt,
+        updatedAt: channel.updatedAt,
+        channelId: channel.id,
+        userId: user.id,
+        channel: {
+          id: channel.id,
+          createAt: channel.createAt,
+          updatedAt: channel.updatedAt,
+          type: 'dual',
+          chatUser: [
+            {
+              channelId: channel.id,
+              createAt: channel.createAt,
+              id: channel.id,
+              updatedAt: channel.updatedAt,
+              userId: partner.id,
+              user: partner,
+            },
+          ],
+          message: [],
+        },
       };
       const forReceiver = {
         id: channel.id,
-        type: 'dual',
-        Users: [creator],
-        Messages: [],
+        createAt: channel.createAt,
+        updatedAt: channel.updatedAt,
+        channelId: channel.id,
+        userId: user.id,
+        channel: {
+          id: channel.id,
+          createAt: channel.createAt,
+          updatedAt: channel.updatedAt,
+          type: 'dual',
+          chatUser: [
+            {
+              channelId: channel.id,
+              createAt: channel.createAt,
+              id: channel.id,
+              updatedAt: channel.updatedAt,
+              userId: creator.id,
+              user: creator,
+            },
+          ],
+          message: [],
+        },
       };
 
       return [forCreator, forReceiver];
