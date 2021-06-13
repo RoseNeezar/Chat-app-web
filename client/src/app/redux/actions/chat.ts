@@ -32,7 +32,7 @@ export const AFetchChat =
   };
 
 export const ASetCurrentChat =
-  (channel: Channel) => (dispatch: Dispatch<ChatDispatchTypes>) => {
+  (channel: Channel | undefined) => (dispatch: Dispatch<ChatDispatchTypes>) => {
     dispatch({ type: SET_CURRENT_CHAT, payload: channel });
   };
 

@@ -1,11 +1,12 @@
 import { Dispatch, useEffect } from "react";
 import socketClient from "socket.io-client";
 import {
+  ACreateChat,
   AFetchChat,
   AReceivedMessage,
   ASetSocket,
 } from "../redux/actions/chat";
-import { Message, User } from "../redux/types/chat.type";
+import { IChannel, Message, User } from "../redux/types/chat.type";
 
 const useSocket = (user: User, dispatch: Dispatch<any>) => {
   useEffect(() => {
@@ -18,6 +19,10 @@ const useSocket = (user: User, dispatch: Dispatch<any>) => {
 
     socket.on("received", (message: Message) => {
       dispatch(AReceivedMessage(message, user.id));
+    });
+
+    socket.on("new-chat", (chats: IChannel) => {
+      dispatch(ACreateChat(chats));
     });
   }, []);
 };
