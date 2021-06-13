@@ -47,6 +47,48 @@ export default class CreateData implements Seeder {
           createAt: timePlus(minute * 5),
           updatedAt: timePlus(minute * 5),
         },
+        {
+          username: 'user',
+          email: 'user@email.com',
+          password,
+          createAt: timePlus(minute * 5),
+          updatedAt: timePlus(minute * 5),
+        },
+        {
+          username: 'user1',
+          email: 'user1@email.com',
+          password,
+          createAt: timePlus(minute * 5),
+          updatedAt: timePlus(minute * 5),
+        },
+        {
+          username: 'user2',
+          email: 'user2@email.com',
+          password,
+          createAt: timePlus(minute * 5),
+          updatedAt: timePlus(minute * 5),
+        },
+        {
+          username: 'user3',
+          email: 'user3@email.com',
+          password,
+          createAt: timePlus(minute * 5),
+          updatedAt: timePlus(minute * 5),
+        },
+        {
+          username: 'user4',
+          email: 'user4@email.com',
+          password,
+          createAt: timePlus(minute * 5),
+          updatedAt: timePlus(minute * 5),
+        },
+        {
+          username: 'user5',
+          email: 'user5@email.com',
+          password,
+          createAt: timePlus(minute * 5),
+          updatedAt: timePlus(minute * 5),
+        },
       ])
       .execute();
 

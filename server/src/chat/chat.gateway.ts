@@ -101,7 +101,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
       const savedMessage = await this.messageRepo.create(msg).save();
 
-      console.log(savedMessage);
       sockets.forEach((socket) => {
         this.server.to(socket).emit('received', savedMessage);
       });

@@ -21,7 +21,7 @@ const NavActions = () => {
         </li>
         <li>
           <div
-            className="relative grid p-3 mx-1 text-xl rounded-full cursor-pointer bg-dark-third text-dark-txt hover:bg-gray-300"
+            className="relative grid p-2 mx-1 ml-5 text-xl rounded-full cursor-pointer bg-dark-third text-dark-txt hover:bg-gray-300"
             id="dark-mode-toggle"
             onClick={() => handleLogout()}
           >
