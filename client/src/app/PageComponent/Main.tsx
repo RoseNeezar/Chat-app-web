@@ -1,3 +1,4 @@
+import Head from "next/head";
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { IState } from "../redux/reducers/rootReducer";
@@ -12,15 +13,20 @@ const Main = () => {
 
   useSocket(currentUser!, dispatch);
   return (
-    <div className="flex flex-row h-screen pt-10 bg-dark-main">
-      <div className="flex-col hidden w-1/5 h-full pt-16 lg:flex">
-        <ChannelList />
-      </div>
+    <>
+      <Head>
+        <title>Chat App</title>
+      </Head>
+      <div className="flex flex-row h-screen pt-10 bg-dark-main">
+        <div className="flex-col hidden w-1/5 h-full pt-16 lg:flex">
+          <ChannelList />
+        </div>
 
-      <div className="w-full h-full px-2 pt-32 lg:w-4/5 lg:pt-16">
-        <Messages />
+        <div className="w-full h-full px-2 pt-32 lg:w-4/5 lg:pt-16">
+          <Messages />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
