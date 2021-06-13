@@ -8,6 +8,7 @@ import Channel from "./Channel";
 
 const ChannelList = () => {
   const channels = useSelector((state: IState) => state.chatReducer.channels);
+  const socket = useSelector((state: IState) => state.chatReducer.socket);
   let [isOpen, setIsOpen] = useState(false);
   const [suggestions, setSuggestions] = useState<User[]>([]);
 
@@ -15,6 +16,15 @@ const ChannelList = () => {
     const event = e.target as HTMLInputElement;
     agent.ChatService.searchUser(event.value || "")
       .then((res) => setSuggestions(res))
+      .catch((err) => console.log(err));
+  };
+
+  const addNewFriend = (id: number) => {
+    agent.ChatService.createChannel(id)
+      .then((chats) => {
+        socket?.emit("add-friend", chats);
+        setIsOpen(false);
+      })
       .catch((err) => console.log(err));
   };
 
@@ -92,9 +102,15 @@ const ChannelList = () => {
                 <div className="mt-4">
                   {suggestions.map((res) => {
                     return (
-                      <div className="flex flex-row justify-between p-1 mb-1 rounded-md bg-dark-third">
+                      <div
+                        key={res.id}
+                        className="flex flex-row justify-between p-1 mb-1 rounded-md bg-dark-third"
+                      >
                         <p className="pl-2 text-dark-txt">{res.username}</p>
-                        <button className="p-1 mr-1 text-sm rounded-md hover:text-black hover:bg-gray-200 text-dark-txt bg-dark-main">
+                        <button
+                          onClick={() => addNewFriend(res.id)}
+                          className="p-1 mr-1 text-sm rounded-md hover:text-black hover:bg-gray-200 text-dark-txt bg-dark-main"
+                        >
                           Add
                         </button>
                       </div>

@@ -3,7 +3,9 @@ import agent from "../../api/agent";
 import {
   Channel,
   ChatDispatchTypes,
+  CREATE_CHAT,
   FETCH_CHATS_TYPES,
+  IChannel,
   Message,
   RECEIVED_MESSAGE,
   SET_CURRENT_CHAT,
@@ -61,4 +63,9 @@ export const APaginateMessages =
     } catch (error) {
       throw error;
     }
+  };
+
+export const ACreateChat =
+  (chat: IChannel) => (dispatch: Dispatch<ChatDispatchTypes>) => {
+    dispatch({ type: CREATE_CHAT, payload: chat });
   };

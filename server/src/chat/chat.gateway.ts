@@ -14,7 +14,7 @@ import ChannelEntity from 'src/entities/channel/channel.entity';
 import MessageEntity from 'src/entities/messages/messages.entity';
 import { MessageRepository } from 'src/entities/messages/messages.repository';
 import UserEntity from 'src/entities/user/user.entity';
-import { ChatService } from './chat.service';
+import { ChatService, IChannel } from './chat.service';
 
 @WebSocketGateway({
   path: '/api/socket.io',
@@ -110,24 +110,28 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('add-friend')
   async handleAddFriends(
-    @MessageBody() channel: ChannelEntity,
+    @MessageBody() channel: IChannel[],
     @ConnectedSocket() client: Socket,
   ) {
     try {
       let online = 'offline';
-      if (this.users.has(channel[1].Users[0].id)) {
+      if (this.users.has(channel[1].channel.chatUser[0].userId)) {
         online = 'online';
-        channel[0].Users[0].status = 'online';
-        this.users.get(channel[1].Users[0].id).sockets.forEach((socket) => {
-          this.server.to(socket).emit('new-chat', channel[0]);
-        });
+        channel[0].channel.chatUser[0].status = 'online';
+        this.users
+          .get(channel[1].channel.chatUser[0].userId)
+          .sockets.forEach((socket) => {
+            this.server.to(socket).emit('new-chat', channel[0]);
+          });
       }
 
-      if (this.users.has(channel[0].Users[0].id)) {
-        channel[1].Users[0].status = online;
-        this.users.get(channel[0].Users[0].id).sockets.forEach((socket) => {
-          this.server.to(socket).emit('new-chat', channel[1]);
-        });
+      if (this.users.has(channel[0].channel.chatUser[0].userId)) {
+        channel[1].channel.chatUser[0].status = online;
+        this.users
+          .get(channel[0].channel.chatUser[0].userId)
+          .sockets.forEach((socket) => {
+            this.server.to(socket).emit('new-chat', channel[1]);
+          });
       }
     } catch (e) {}
   }
