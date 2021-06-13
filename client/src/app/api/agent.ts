@@ -31,6 +31,7 @@ const ChatService = {
     axios.get(`/chat/search-user`, { params: { username } }).then(responseBody),
   createChannel: (partnerId: number) =>
     requests.post("/chat/create-channel", { partnerId }),
+  deleteChannel: (channelId: number) => requests.del(`/chat/${channelId}`),
 };
 const agent = {
   AuthService,
