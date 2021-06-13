@@ -2,6 +2,7 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router";
 import { ALogout } from "../../../redux/actions/auth";
+import { ASetCurrentChat } from "../../../redux/actions/chat";
 import { IState } from "../../../redux/reducers/rootReducer";
 
 const NavActions = () => {
@@ -9,6 +10,7 @@ const NavActions = () => {
   const dispatch = useDispatch();
   const history = useHistory();
   const handleLogout = () => {
+    dispatch(ASetCurrentChat(undefined));
     dispatch(ALogout(history));
   };
   return (
