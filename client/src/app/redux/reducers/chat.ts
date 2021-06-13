@@ -1,7 +1,7 @@
 import { Channel, ChatDispatchTypes, IChat } from "../types/chat.type";
 
 const initialState: IChat = {
-  channels: undefined,
+  channels: [],
   currentChat: undefined,
   socket: null,
 };

@@ -1,16 +1,9 @@
 export const FETCH_CHATS_TYPES = "FETCH_CHATS";
-export const SET_CURRENT_CHAT_TYPES = "SET_CURRENT_CHAT";
-export const FRIENDS_ONLINE = "FRIENDS_ONLINE";
-export const FRIEND_ONLINE = "FRIEND_ONLINE";
-export const FRIEND_OFFLINE = "FRIEND_OFFLINE";
+export const SET_CURRENT_CHAT = "SET_CURRENT_CHAT";
 export const SET_SOCKET = "SET_SOCKET";
 export const RECEIVED_MESSAGE = "RECEIVED_MESSAGE";
-export const SENDER_TYPING = "SENDER_TYPING";
 export const PAGINATE_MESSAGES = "PAGINATE_MESSAGES";
-export const INCREMENT_SCROLL = "INCREMENT_SCROLL";
 export const CREATE_CHAT = "CREATE_CHAT";
-export const ADD_USER_TO_GROUP = "ADD_USER_TO_GROUP";
-export const LEAVE_CURRENT_CHAT = "LEAVE_CURRENT_CHAT";
 export const DELETE_CURRENT_CHAT = "DELETE_CURRENT_CHAT";
 
 export interface IFetchChatAction {
@@ -19,11 +12,42 @@ export interface IFetchChatAction {
 }
 
 export interface ISetCurrentChat {
-  type: typeof SET_CURRENT_CHAT_TYPES;
-  payload: Channel;
+  type: typeof SET_CURRENT_CHAT;
+  payload: Channel | undefined;
+}
+export interface ISetSocket {
+  type: typeof SET_SOCKET;
+  payload: SocketIOClient.Socket;
 }
 
-export type ChatDispatchTypes = IFetchChatAction | ISetCurrentChat;
+export interface IReceivedMessage {
+  type: typeof RECEIVED_MESSAGE;
+  payload: { message: Message; userId: number };
+}
+
+export interface IPaginateMessages {
+  type: typeof PAGINATE_MESSAGES;
+  payload: IPaginatedMessage & { id?: number };
+}
+
+export interface ICreateChat {
+  type: typeof CREATE_CHAT;
+  payload: IChannel;
+}
+
+export interface IDeleteCurrentChat {
+  type: typeof DELETE_CURRENT_CHAT;
+  payload: number;
+}
+
+export type ChatDispatchTypes =
+  | IFetchChatAction
+  | ISetCurrentChat
+  | ISetSocket
+  | IReceivedMessage
+  | IPaginateMessages
+  | ICreateChat
+  | IDeleteCurrentChat;
 
 export interface User {
   id: number;
@@ -69,6 +93,7 @@ export interface Channel {
   type: string;
   chatUser: ChatUser[];
   message: Message[];
+  pagination?: Pagination;
 }
 
 export interface IChannel {
@@ -80,7 +105,17 @@ export interface IChannel {
   channel: Channel;
 }
 
+export interface Pagination {
+  page: string;
+  totalPages: number;
+}
+export interface IPaginatedMessage {
+  messages: Message[];
+  pagination: Pagination;
+}
+
 export interface IChat {
   channels?: IChannel[];
   currentChat?: Channel;
+  socket: SocketIOClient.Socket | null;
 }
