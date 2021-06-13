@@ -4,6 +4,7 @@ import {
   Channel,
   ChatDispatchTypes,
   CREATE_CHAT,
+  DELETE_CURRENT_CHAT,
   FETCH_CHATS_TYPES,
   IChannel,
   Message,
@@ -68,4 +69,9 @@ export const APaginateMessages =
 export const ACreateChat =
   (chat: IChannel) => (dispatch: Dispatch<ChatDispatchTypes>) => {
     dispatch({ type: CREATE_CHAT, payload: chat });
+  };
+
+export const ADeleteCurrentChat =
+  (channelId: number) => (dispatch: Dispatch<ChatDispatchTypes>) => {
+    dispatch({ type: DELETE_CURRENT_CHAT, payload: channelId });
   };

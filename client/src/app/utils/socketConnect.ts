@@ -2,6 +2,7 @@ import { Dispatch, useEffect } from "react";
 import socketClient from "socket.io-client";
 import {
   ACreateChat,
+  ADeleteCurrentChat,
   AFetchChat,
   AReceivedMessage,
   ASetSocket,
@@ -23,6 +24,10 @@ const useSocket = (user: User, dispatch: Dispatch<any>) => {
 
     socket.on("new-chat", (chats: IChannel) => {
       dispatch(ACreateChat(chats));
+    });
+
+    socket.on("delete-channel", (channelId: number) => {
+      dispatch(ADeleteCurrentChat(channelId));
     });
   }, []);
 };
