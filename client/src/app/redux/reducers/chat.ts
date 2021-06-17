@@ -1,4 +1,5 @@
-import { Channel, ChatDispatchTypes, IChat } from "../types/chat.type";
+import { ChatDispatchTypes, IChat } from "../types/chat.type";
+import { produce } from "immer";
 
 const initialState: IChat = {
   channels: [],
@@ -6,123 +7,73 @@ const initialState: IChat = {
   socket: null,
 };
 
-const chatReducer = (
-  state: IChat | undefined = initialState,
-  action: ChatDispatchTypes
-): IChat => {
-  switch (action.type) {
-    case "FETCH_CHATS":
-      return {
-        ...state,
-        channels: action.payload,
-      };
-    case "SET_CURRENT_CHAT": {
-      if (typeof action.payload === "undefined") {
-        return {
-          ...state,
-          currentChat: undefined,
-        };
+const chatReducer = produce(
+  (draftState: IChat = initialState, action: ChatDispatchTypes) => {
+    switch (action.type) {
+      case "FETCH_CHATS":
+        draftState.channels = action.payload;
+        return;
+      case "SET_CURRENT_CHAT": {
+        if (typeof action.payload === "undefined") {
+          draftState.currentChat = undefined;
+          return;
+        }
+        draftState.currentChat = action.payload;
+        return;
       }
-      return {
-        ...state,
-        currentChat: action.payload,
-      };
-    }
-    case "SET_SOCKET":
-      return {
-        ...state,
-        socket: action.payload,
-      };
-    case "RECEIVED_MESSAGE": {
-      const { message } = action.payload;
-      let currentChatCopy = { ...state.currentChat } as Channel;
+      case "SET_SOCKET":
+        draftState.socket = action.payload;
+        return;
 
-      const chatsCopy = state.channels?.map((chat) => {
-        if (message.channelId === chat.channelId) {
-          if (message.channelId === currentChatCopy.id) {
-            currentChatCopy = {
-              ...currentChatCopy,
-              message: [...[message], ...currentChatCopy.message],
-            };
+      case "RECEIVED_MESSAGE": {
+        const { message } = action.payload;
+
+        draftState.channels = draftState.channels?.map((chat) => {
+          if (message.channelId === chat.channelId) {
+            if (message.channelId === chat.channelId) {
+              draftState.currentChat?.message.unshift(message);
+            }
           }
+          chat.channel.message.push(message);
+          return chat;
+        });
+        return;
+      }
 
-          return {
-            ...chat,
-            channel: {
-              ...chat.channel,
-              message: [...[message], ...chat.channel.message],
-            },
-          };
-        }
+      case "PAGINATE_MESSAGES": {
+        const { messages, id, pagination } = action.payload;
 
-        return chat;
-      });
+        draftState.channels = draftState.channels?.map((chat) => {
+          if (chat.channelId === id) {
+            draftState.currentChat?.message.push(...messages);
+            draftState.currentChat!.pagination = pagination;
+            chat.channel.message.push(...messages);
+            chat.channel.pagination = pagination;
+          }
+          return chat;
+        });
+        return;
+      }
 
-      return {
-        ...state,
-        channels: chatsCopy,
-        currentChat: currentChatCopy,
-      };
-    }
-
-    case "PAGINATE_MESSAGES": {
-      const { messages, id, pagination } = action.payload;
-
-      let currentChatCopy = { ...state.currentChat } as Channel;
-
-      const chatsCopy = state.channels!.map((chat) => {
-        if (chat.channelId === id) {
-          const shifted = [...chat.channel.message, ...messages];
-
-          currentChatCopy = {
-            ...currentChatCopy,
-            message: shifted,
-            pagination: pagination,
-          };
-          return {
-            ...chat,
-            channel: {
-              ...chat.channel,
-              message: shifted,
-              pagination: pagination,
-            },
-          };
-        }
-
-        return chat;
-      });
-
-      return {
-        ...state,
-        channels: chatsCopy,
-        currentChat: currentChatCopy,
-      };
-    }
-
-    case "CREATE_CHAT": {
-      console.log("chat: new channel", action.payload, "old", state.channels);
-      return {
-        ...state,
-        channels: [...state.channels!, ...[action.payload]],
-      };
-    }
-    case "DELETE_CURRENT_CHAT": {
-      return {
-        ...state,
-        channels: state.channels!.filter(
+      case "CREATE_CHAT": {
+        draftState.channels?.push(action.payload);
+        return;
+      }
+      case "DELETE_CURRENT_CHAT": {
+        draftState.channels = draftState.channels?.filter(
           (chat) => chat.channelId !== action.payload
-        ),
-        currentChat:
-          state.currentChat?.id === action.payload
-            ? undefined
-            : state.currentChat,
-      };
-    }
+        );
+        if (draftState.currentChat?.id === action.payload) {
+          draftState.currentChat = undefined;
+        }
+        return;
+      }
 
-    default: {
-      return state;
+      default: {
+        return draftState;
+      }
     }
   }
-};
+);
 
 export default chatReducer;
