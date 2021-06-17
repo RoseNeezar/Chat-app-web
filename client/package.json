@@ -15,6 +15,7 @@
     "classnames": "^2.3.1",
     "dayjs": "^1.10.5",
     "emoji-mart": "^3.0.1",
+    "immer": "^9.0.3",
     "next": "latest",
     "next-redux-wrapper": "^6.0.2",
     "react": "^16.12.0",

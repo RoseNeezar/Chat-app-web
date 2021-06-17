@@ -16,9 +16,9 @@ const App = () => {
           <Navbar />
           <Main />
         </ProtectedRoute>
-        <ProtectAuthRoute exact path="/login">
+        <Route exact path="/login">
           <Login />
-        </ProtectAuthRoute>
+        </Route>
         <ProtectAuthRoute exact path="/register">
           <Register />
         </ProtectAuthRoute>

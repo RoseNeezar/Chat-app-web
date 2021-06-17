@@ -117,5 +117,5 @@ export interface IPaginatedMessage {
 export interface IChat {
   channels?: IChannel[];
   currentChat?: Channel;
-  socket: SocketIOClient.Socket | null;
+  socket?: SocketIOClient.Socket | null;
 }
