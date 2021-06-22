@@ -44,6 +44,8 @@ cp .env.example .env
 yarn start
 ```
 
+App runs by default at http://localhost:3005
+
 ## Helpers
 Install lazydocker on your system. This tool can help visualise container logs.
 
