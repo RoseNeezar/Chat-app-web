@@ -123,7 +123,7 @@ export class ChatService {
           id: partnerId,
         },
       });
-      console.log('creator----', creator, partner);
+
       const forCreator: IChannel = {
         id: channel.id,
         createAt: channel.createAt,
