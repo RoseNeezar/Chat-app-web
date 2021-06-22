@@ -75,7 +75,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   @SubscribeMessage('message')
   async handleMessage(
-    @MessageBody() message: MessageEntity & { toUserId: string[] },
+    @MessageBody() message: MessageEntity & { toUserId: any[] },
     @ConnectedSocket() client: Socket,
   ) {
     let sockets = [];
@@ -84,9 +84,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       sockets = this.users.get(message.fromUserId).sockets;
     }
 
-    message.toUserId.forEach((id) => {
-      if (this.users.has(id)) {
-        sockets = [...sockets, ...this.users.get(id).sockets];
+    message.toUserId.forEach((res) => {
+      if (this.users.has(res.userId)) {
+        sockets = [...sockets, ...this.users.get(res.userId).sockets];
       }
     });
 
