@@ -34,7 +34,11 @@ Chat application that contains the mvp  features of a generic chat app.
 
 ## Installation
 
-Install lazydocker on your system. This tool can help visualise container logs
+Install lazydocker on your system. This tool can help visualise container logs. To start run
+
+```bash
+cp .env.example .env
+```
 
 ```bash
 yarn start
