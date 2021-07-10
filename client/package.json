@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.2.0",
+    "@reduxjs/toolkit": "^1.6.0",
     "@types/react-router-dom": "^5.1.6",
     "axios": "^0.21.1",
     "babel-plugin-react-native-web": "^0.16.5",
